@@ -10,14 +10,16 @@ import (
 )
 
 var (
-	//Version cidr version
-	Version = "0.0.1"
+	//version cidr version
+	version = "0.1.0"
+	commit  = "none"
+	date    = "unknown"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "cidr"
-	app.Version = Version
+	app.Version = version
 	app.Usage = "Expand CIDR range to individual IP addresses"
 	app.UsageText = `Expands a CIDR range or a space separated list of CIDR ranges to individual IP addresses. 
 	
@@ -189,7 +191,6 @@ func check(c *cli.Context) error {
 				}
 			}
 		}
-
 		println(result)
 	}
 	return nil

@@ -161,7 +161,7 @@ func check(c *cli.Context) error {
 						prefix = ""
 						first = false
 					}
-					result += fmt.Sprintf(`%s{"ip":%s,"belongs":%t}`, prefix, m.IP, m.Belongs)
+					result += fmt.Sprintf(`%s{"ip":"%s","belongs":%t}`, prefix, m.IP, m.Belongs)
 				}
 				result += "]"
 

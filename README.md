@@ -4,7 +4,7 @@ CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It coul
 ## Using as a library
 In order to start, go get this repository:
 ```go
-go get  github.com/adedayo/net/cidr
+go get github.com/adedayo/net/cidr
 ```
 
 ### Example

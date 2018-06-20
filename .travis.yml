@@ -9,3 +9,7 @@ deploy:
   on:
     tags: true
     condition: $TRAVIS_OS_NAME = linux
+before_install:
+  - go get github.com/mattn/goveralls
+script:
+  - $HOME/gopath/bin/goveralls -v -service=travis-ci

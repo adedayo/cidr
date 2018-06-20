@@ -1,5 +1,3 @@
-
-![Travis](https://img.shields.io/travis/adedayo/cidr.svg)
 [![Build Status](https://travis-ci.org/adedayo/cidr.svg?branch=master)](https://travis-ci.org/adedayo/cidr)
 [![Coverage Status](https://coveralls.io/repos/github/adedayo/cidr/badge.svg?branch=master)](https://coveralls.io/github/adedayo/cidr?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/adedayo/cidr)](https://goreportcard.com/report/github.com/adedayo/cidr)

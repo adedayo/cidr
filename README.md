@@ -11,7 +11,7 @@ CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It coul
 ## Using as a library
 In order to start, go get this repository:
 ```go
-go get github.com/adedayo/net/cidr
+go get github.com/adedayo/cidr
 ```
 
 ### Example
@@ -20,7 +20,7 @@ In your code simply import as usual and enjoy:
 ```go
 package main
 
-import "github.com/adedayo/net/cidr"
+import "github.com/adedayo/cidr"
 
 func main() {
 	ips := cidr.Expand("192.168.2.5/30")

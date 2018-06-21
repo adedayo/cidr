@@ -10,7 +10,6 @@ import (
 )
 
 var (
-	//cidr version
 	version = "0.0.0" // deployed version will be taken from release tags
 	commit  = "none"
 	date    = "unknown"

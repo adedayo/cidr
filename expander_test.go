@@ -10,16 +10,6 @@ var (
 	baseIP = "192.168.0.2"
 )
 
-// func TestExpand(t *testing.T) {
-// 	if len(Expand(baseIP+"/32")) != 1 {
-// 		t.Error("A /32 should return a single IP")
-// 	}
-
-// 	if len(Expand(baseIP+"/32")) != 1 {
-// 		t.Error("A /32 should return a single IP")
-// 	}
-// }
-
 func TestExpand(t *testing.T) {
 	testCases := []struct {
 		input    int
@@ -41,10 +31,6 @@ func TestExpand(t *testing.T) {
 			input:    8,
 			expected: 16777216,
 		},
-		// {
-		// 	input:    7,
-		// 	expected: 33554432,
-		// },
 	}
 	for _, tc := range testCases {
 		t.Run("Expected result lengths", func(t *testing.T) {

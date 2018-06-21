@@ -62,7 +62,7 @@ cidr 8.8.8.8/24 192.168.10.1/30
 				return process(c)
 			},
 		},
-		cli.Command{
+		{
 			Name:    "check",
 			Aliases: []string{"c"},
 			Usage:   "Checks whether one or more space-separated `CIDR ranges` contain one or more space-separated `IP addresses`",
@@ -144,54 +144,39 @@ func check(c *cli.Context) error {
 		result := ""
 		json := c.GlobalBool("json")
 		if json {
-			result += "{\n"
-			firstCidr := true
-			for _, cid := range cidrs {
-				mem := cidr.Contains(cid, ips...)
-
-				prefixCidr := ",\n"
-				if firstCidr {
-					prefixCidr = ""
-					firstCidr = false
-				}
-
-				result += fmt.Sprintf(`%s"%s": [`, prefixCidr, cid)
-				first := true
-				for _, m := range mem {
-					prefix := ","
-					if first {
-						prefix = ""
-						first = false
-					}
-					result += fmt.Sprintf(`%s{"ip":"%s","belongs":%t}`, prefix, m.IP, m.Belongs)
-				}
-				result += "]"
-
-			}
-			result += "\n}"
+			result += "{\n" + generateContent(cidrs, ips, ",\n", ",", `%s"%s": [`, `%s{"ip":"%s","belongs":%t}`, "]") + "\n}"
 		} else {
-			result = ""
-			firstCidr := true
-			for _, cid := range cidrs {
-				mem := cidr.Contains(cid, ips...)
-				prefixCidr := "\n"
-				if firstCidr {
-					prefixCidr = ""
-					firstCidr = false
-				}
-				result += fmt.Sprintf("%s%s: ", prefixCidr, cid)
-				first := true
-				for _, m := range mem {
-					prefix := " "
-					if first {
-						prefix = ""
-						first = false
-					}
-					result += fmt.Sprintf(`%s%s,%t`, prefix, m.IP, m.Belongs)
-				}
-			}
+			result = generateContent(cidrs, ips, "\n", " ", `%s%s: `, `%s%s,%t`, "")
 		}
 		println(result)
 	}
 	return nil
+}
+
+func generateContent(cidrs, ips []string, prefixStart, prefixEnd, resultFormat1, resultFormat2, resultClose string) string {
+	result := ""
+	firstCidr := true
+	for _, cid := range cidrs {
+		mem := cidr.Contains(cid, ips...)
+
+		prefixCidr := prefixStart
+		if firstCidr {
+			prefixCidr = ""
+			firstCidr = false
+		}
+
+		result += fmt.Sprintf(resultFormat1, prefixCidr, cid)
+		first := true
+		for _, m := range mem {
+			prefix := prefixEnd
+			if first {
+				prefix = ""
+				first = false
+			}
+			result += fmt.Sprintf(resultFormat2, prefix, m.IP, m.Belongs)
+		}
+		result += resultClose
+
+	}
+	return result
 }

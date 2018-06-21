@@ -1,10 +1,12 @@
+# CIDR 
+CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It could also be used to check the membership of an IP v4 address in a CIDR range.
+[![GoDoc](https://godoc.org/github.com/adedayo/cidr?status.svg)](https://godoc.org/github.com/adedayo/cidr)
 [![Build Status](https://travis-ci.org/adedayo/cidr.svg?branch=master)](https://travis-ci.org/adedayo/cidr)
 [![Coverage Status](https://coveralls.io/repos/github/adedayo/cidr/badge.svg?branch=master)](https://coveralls.io/github/adedayo/cidr?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/adedayo/cidr)](https://goreportcard.com/report/github.com/adedayo/cidr)
 ![GitHub release](https://img.shields.io/github/release/adedayo/cidr.svg)
-
-# CIDR 
-CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It could also be used to check the membership of an IP v4 address in a CIDR range.
+[![GitHub license](https://img.shields.io/github/license/adedayo/cidr.svg)](https://github.com/adedayo/cidr/blob/master/LICENSE)
+[![Twitter](https://img.shields.io/twitter/url/https/github.com/adedayo/cidr.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%2Fadedayo%2Fcidr)
 
 ## Using as a library
 In order to start, go get this repository:

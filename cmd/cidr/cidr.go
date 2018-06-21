@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	//version cidr version
-	version = "0.1.0"
+	//cidr version
+	version = "0.0.0" // deployed version will be taken from release tags
 	commit  = "none"
 	date    = "unknown"
 )
@@ -93,31 +93,29 @@ func process(c *cli.Context) error {
 
 	if c.NArg() == 0 {
 		c.App.Run([]string{"cidr", "h"})
-	} else {
-		if c.GlobalBool("json") {
-			result := "{\n"
-			prefix := ""
-			for i := 0; i < c.NArg(); i++ {
-				arg := c.Args().Get(i)
-				if i > 0 {
-					prefix = ",\n\n"
-				}
-				ips := cidr.Expand(arg)
-				for ind, ip := range ips {
-					ips[ind] = fmt.Sprintf(`"%s"`, ip)
-				}
-				result += fmt.Sprintf("%s\"%s\": [%s]", prefix, arg, strings.Join(ips, ", "))
+		return nil
+	}
+	if c.GlobalBool("json") {
+		result := "{\n"
+		prefix := ""
+		for i := 0; i < c.NArg(); i++ {
+			arg := c.Args().Get(i)
+			if i > 0 {
+				prefix = ",\n\n"
 			}
-			result += "\n}"
-			fmt.Println(result)
-
-		} else {
-			for i := 0; i < c.NArg(); i++ {
-				arg := c.Args().Get(i)
-				fmt.Printf("%s: %s\n\n", arg, strings.Join(cidr.Expand(arg), " "))
+			ips := cidr.Expand(arg)
+			for ind, ip := range ips {
+				ips[ind] = fmt.Sprintf(`"%s"`, ip)
 			}
+			result += fmt.Sprintf("%s\"%s\": [%s]", prefix, arg, strings.Join(ips, ", "))
 		}
-
+		result += "\n}"
+		fmt.Println(result)
+	} else {
+		for i := 0; i < c.NArg(); i++ {
+			arg := c.Args().Get(i)
+			fmt.Printf("%s: %s\n\n", arg, strings.Join(cidr.Expand(arg), " "))
+		}
 	}
 	return nil
 }
@@ -125,31 +123,31 @@ func process(c *cli.Context) error {
 func check(c *cli.Context) error {
 	if c.NArg() < 3 {
 		c.App.Run([]string{"cidr", "help", "check"})
-	} else {
-		cidrs := []string{}
-		ips := []string{}
-		isCider := true
-		for i := 0; i < c.NArg(); i++ {
-			token := c.Args().Get(i)
-			if isCider && (token == "contains" || token == "," || token == "c") {
-				isCider = false
-				continue
-			}
-			if isCider {
-				cidrs = append(cidrs, token)
-			} else {
-				ips = append(ips, token)
-			}
-		}
-		result := ""
-		json := c.GlobalBool("json")
-		if json {
-			result += "{\n" + generateContent(cidrs, ips, ",\n", ",", `%s"%s": [`, `%s{"ip":"%s","belongs":%t}`, "]") + "\n}"
-		} else {
-			result = generateContent(cidrs, ips, "\n", " ", `%s%s: `, `%s%s,%t`, "")
-		}
-		println(result)
+		return nil
 	}
+	cidrs := []string{}
+	ips := []string{}
+	isCider := true
+	for i := 0; i < c.NArg(); i++ {
+		token := c.Args().Get(i)
+		if isCider && (token == "," || token == "contains") {
+			isCider = false
+			continue
+		}
+		if isCider {
+			cidrs = append(cidrs, token)
+		} else {
+			ips = append(ips, token)
+		}
+	}
+	result := ""
+	json := c.GlobalBool("json")
+	if json {
+		result += "{\n" + generateContent(cidrs, ips, ",\n", ",", `%s"%s": [`, `%s{"ip":"%s","belongs":%t}`, "]") + "\n}"
+	} else {
+		result = generateContent(cidrs, ips, "\n", " ", `%s%s: `, `%s%s,%t`, "")
+	}
+	println(result)
 	return nil
 }
 

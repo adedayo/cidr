@@ -88,7 +88,7 @@ The structure of the checking command is as follows
 cidr [flag] check <space separated list of CIDR ranges> <delimiter> <space-separated list of IP addresses to check>
 ```
 
-The delimiter can be any of `contains`, `c` or simply `,`
+The delimiter can be any of `contains` or simply `,`
 
 Examples
 

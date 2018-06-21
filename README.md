@@ -1,5 +1,6 @@
 # CIDR 
 CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It could also be used to check the membership of an IP v4 address in a CIDR range.
+
 [![GoDoc](https://godoc.org/github.com/adedayo/cidr?status.svg)](https://godoc.org/github.com/adedayo/cidr)
 [![Build Status](https://travis-ci.org/adedayo/cidr.svg?branch=master)](https://travis-ci.org/adedayo/cidr)
 [![Coverage Status](https://coveralls.io/repos/github/adedayo/cidr/badge.svg?branch=master)](https://coveralls.io/github/adedayo/cidr?branch=master)

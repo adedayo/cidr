@@ -71,7 +71,7 @@ cidr 8.8.8.8/24 192.168.10.1/30
 	cidr check 192.168.10.1/30 contains 192.168.10.3
 
 	To check multiple CIDRs and IPs, generating a JSON output:
-	cidr check 192.168.10.1/30 220.10.5.15/28 contains 192.168.10.3 220.10.5.18 192.168.10.230 			
+	cidr --json check 192.168.10.1/30 220.10.5.15/28 contains 192.168.10.3 220.10.5.18 192.168.10.230 			
 			`,
 			Action: func(c *cli.Context) error {
 				return check(c)

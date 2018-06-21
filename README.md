@@ -38,7 +38,18 @@ This should print the set of IPs described by the CIDR range 192.168.2.5/30:
 ```
 
 ## Using it as a command-line tool
-CIDR is also available as a command-line tool
+CIDR is also available as a command-line tool. 
+
+### Installation
+Prebuilt binaries may be found for your operating system here: https://github.com/adedayo/cidr/releases
+
+For macOS X, you could install via brew as follows:
+```bash
+brew tap adedayo/tap
+brew install cidr
+``` 
+
+
 ### Generating IPs in a CIDR range
 
 ```bash

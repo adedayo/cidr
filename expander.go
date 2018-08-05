@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 )
 
 //Expand takes a CIDR formatted strings and expands them to corresponding Ipv4 instances including the network and broadcast addresses as first and last elements respectively. Any error returns an empty slice
 func Expand(cidr string) []string {
+	if !strings.Contains(cidr, "/") {
+		//deal with potentially raw IP in non-CIDR format
+		cidr += "/32"
+	}
 	ip, network, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return []string{}

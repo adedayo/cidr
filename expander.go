@@ -13,42 +13,54 @@ func Expand(cidr string) []string {
 		//deal with potentially raw IP in non-CIDR format
 		cidr += "/32"
 	}
-	ip, network, err := net.ParseCIDR(cidr)
+	nonCidr := strings.Split(cidr, "/")
+
+	ipAdds, err := net.LookupIP(nonCidr[0])
 	if err != nil {
 		return []string{}
 	}
-	size, _ := network.Mask.Size()
-	if size == 32 {
-		return []string{ip.String()}
+	combinedIPs := []string{}
+	for _, ipAdd := range ipAdds {
+		cidr = ipAdd.To4().String() + "/" + nonCidr[1]
+		ip, network, err := net.ParseCIDR(cidr)
+		if err != nil {
+			continue
+		}
+		size, _ := network.Mask.Size()
+		if size == 32 {
+			combinedIPs = append(combinedIPs, ip.String())
+			continue
+		}
+
+		//include network and broadcast addresses in count
+		hostCount := 2 << uint(31-size)
+		ips := make([]string, hostCount)
+		ips[0] = network.IP.String()
+
+		//network address starting point
+		octets := decimalOctets(network.IP)
+
+		for i := 1; i < hostCount; i++ {
+			octets[3]++
+			if octets[3] > 255 {
+				octets[3] = 0
+				octets[2]++
+			}
+
+			if octets[2] > 255 {
+				octets[2] = 0
+				octets[1]++
+			}
+
+			if octets[1] >= 255 {
+				octets[1] = 0
+				octets[0]++
+			}
+			ips[i] = toIP(octets)
+		}
+		combinedIPs = append(combinedIPs, ips...)
 	}
-
-	//include network and broadcast addresses in count
-	hostCount := 2 << uint(31-size)
-	ips := make([]string, hostCount)
-	ips[0] = network.IP.String()
-
-	//network address starting point
-	octets := decimalOctets(network.IP)
-
-	for i := 1; i < hostCount; i++ {
-		octets[3]++
-		if octets[3] > 255 {
-			octets[3] = 0
-			octets[2]++
-		}
-
-		if octets[2] > 255 {
-			octets[2] = 0
-			octets[1]++
-		}
-
-		if octets[1] >= 255 {
-			octets[1] = 0
-			octets[0]++
-		}
-		ips[i] = toIP(octets)
-	}
-	return ips
+	return combinedIPs
 }
 
 func toIP(oct []int) string {

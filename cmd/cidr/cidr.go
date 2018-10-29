@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/adedayo/cidr"
-	"github.com/urfave/cli"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/adedayo/cidr"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -173,7 +174,6 @@ func generateContent(cidrs, ips []string, prefixStart, prefixEnd, resultFormat1,
 			result += fmt.Sprintf(resultFormat2, prefix, m.IP, m.Belongs)
 		}
 		result += resultClose
-
 	}
 	return result
 }

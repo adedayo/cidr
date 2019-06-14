@@ -3,6 +3,7 @@ package cidr
 import (
 	"fmt"
 	"net"
+	"strings"
 	"testing"
 )
 
@@ -41,6 +42,32 @@ func TestExpand(t *testing.T) {
 		})
 	}
 }
+
+func TestExpandWithPort(t *testing.T) {
+	testCases := []struct {
+		input    string
+		expected []string
+	}{
+		{
+			input:    "1.10.2.5:500-498",
+			expected: []string{"1.10.2.5:498,499,500"},
+		},
+		{
+			input: "1.10.2.5/31:500-490",
+			expected: []string{"1.10.2.4:490,491,492,493,494,495,496,497,498,499,500",
+				"1.10.2.5:490,491,492,493,494,495,496,497,498,499,500"},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run("Expected expansion with ports", func(t *testing.T) {
+			obtained := Expand(tc.input)
+			if strings.Join(obtained, " ") != strings.Join(tc.expected, " ") {
+				t.Errorf("Expansion of %s should be %s, but got %s", tc.input, strings.Join(tc.expected, " "), strings.Join(obtained, ""))
+			}
+		})
+	}
+}
+
 func TestBadArgument(t *testing.T) {
 	cidr := fmt.Sprintf("%s/", baseIP)
 	expanded := Expand(cidr)
@@ -80,6 +107,26 @@ func TestExpandBadCIDR(t *testing.T) {
 	}
 }
 
+func TestExpandBadCIDR2(t *testing.T) {
+	exp := Expand("255.abc.256.255/24")
+	if len(exp) != 0 {
+		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
+	}
+}
+
+func TestExpandBadCIDR3(t *testing.T) {
+	exp := Expand("255.122.25/24")
+	if len(exp) != 0 {
+		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
+	}
+}
+
+func TestExpandBadCIDR4(t *testing.T) {
+	exp := Expand("255.122.25.24.22/24")
+	if len(exp) != 0 {
+		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
+	}
+}
 func TestMembership(t *testing.T) {
 	membership := Contains("10.10.10.3/30", "10.10.10.0", "10.10.10.1", "10.10.10.2", "10.10.10.3")
 	for _, member := range membership {

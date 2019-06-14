@@ -9,13 +9,49 @@ import (
 
 //Expand takes a CIDR formatted strings and expands them to corresponding Ipv4 instances including the network and broadcast addresses as first and last elements respectively. Any error returns an empty slice
 func Expand(cidr string) []string {
+
+	if strings.Contains(cidr, ":") {
+		if ips, ports, err := ExpandWithPort(cidr); err == nil {
+			pp := []string{}
+			ranges := []string{}
+			for _, p := range ports {
+				pp = append(pp, fmt.Sprintf("%d", p))
+			}
+			portsString := strings.Join(pp, ",")
+
+			for _, ip := range ips {
+				ranges = append(ranges, fmt.Sprintf("%s:%s", ip, portsString))
+			}
+			return ranges
+		}
+		return []string{}
+	}
+
 	if !strings.Contains(cidr, "/") {
 		//deal with potentially raw IP in non-CIDR format
 		cidr += "/32"
 	}
 	nonCidr := strings.Split(cidr, "/")
+	address := nonCidr[0]
 
-	ipAdds, err := net.LookupIP(nonCidr[0])
+	if strings.Contains(address, ".") {
+		//sanity check for IP addresses
+		if octets := strings.Split(address, "."); len(octets) == 4 {
+			for _, oct := range octets {
+				if octn, err := strconv.Atoi(oct); err == nil {
+					if octn > 255 { // invalid octet
+						return []string{}
+					}
+				} else {
+					return []string{}
+				}
+			}
+		} else {
+			return []string{}
+		}
+	}
+
+	ipAdds, err := net.LookupIP(address)
 	if err != nil {
 		return []string{}
 	}
@@ -61,6 +97,56 @@ func Expand(cidr string) []string {
 		combinedIPs = append(combinedIPs, ips...)
 	}
 	return combinedIPs
+}
+
+//ExpandWithPort expands a CIDR range with possible port ranges too
+//For example, 10.1.4.2/32:100-200,250,800-855 == 10.1.4.2:100,101,...200,250,800,...,855.
+//These will be returned as a slice of IPs, a sorted slice of int ports, and nil if there is no error
+func ExpandWithPort(cidrPort string) (cidr []string, ports []int, err error) {
+	if split := strings.Split(cidrPort, ":"); len(split) == 2 {
+		cidr = Expand(split[0])
+		if len(cidr) == 0 {
+			return cidr, ports, fmt.Errorf("Invalid CIDR format: %s", split[0])
+		}
+		if ports, err = expandPorts(split[1]); err != nil {
+			return cidr, ports, err
+		}
+
+	} else {
+		return cidr, ports, fmt.Errorf("Invalid CIDR and port format: %s", cidrPort)
+	}
+	return
+}
+
+func expandPorts(port string) (ports []int, err error) {
+	pp := strings.Split(port, ",")
+	for _, p := range pp {
+		if !strings.Contains(p, "-") {
+			intP, e := strconv.Atoi(p)
+			if e != nil {
+				return ports, e
+			}
+			ports = append(ports, intP)
+		} else if pRange := strings.Split(p, "-"); len(pRange) == 2 {
+			low, err := strconv.Atoi(pRange[0])
+			if err != nil {
+				return ports, fmt.Errorf("Invalid port %s", pRange[0])
+			}
+			high, err := strconv.Atoi(pRange[1])
+			if err != nil {
+				return ports, fmt.Errorf("Invalid port %s", pRange[1])
+			}
+			if low > high {
+				low, high = high, low
+			}
+			for i := low; i <= high; i++ {
+				ports = append(ports, i)
+			}
+		} else {
+			return ports, fmt.Errorf("The port range %s is invalid", p)
+		}
+	}
+	return
 }
 
 func toIP(oct []int) string {

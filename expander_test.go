@@ -121,6 +121,49 @@ func TestExpandBadCIDR3(t *testing.T) {
 	}
 }
 
+func TestExpandBadPorts(t *testing.T) {
+	testCases := []struct {
+		input    string
+		expected int
+	}{
+		{
+			input:    "225.122.25.20/32:1-a",
+			expected: 0,
+		},
+		{
+			input:    "225.122.25.20/32:a",
+			expected: 0,
+		},
+		{
+			input:    "225.122.25.20/32:a-1",
+			expected: 0,
+		},
+		{
+			input:    "225.122.25.20/32:1--3",
+			expected: 0,
+		},
+		{
+			input:    "225.122.25.20/32:1-",
+			expected: 0,
+		},
+		{
+			input:    ":",
+			expected: 0,
+		},
+		{
+			input:    "b:a:",
+			expected: 0,
+		},
+	}
+	for _, tc := range testCases {
+		t.Run("Bad port specification", func(t *testing.T) {
+			obtained := Expand(tc.input)
+			if len(obtained) != tc.expected {
+				t.Errorf("Bad port in CIDR should return empty list, instead of %s", obtained)
+			}
+		})
+	}
+}
 func TestExpandBadCIDR4(t *testing.T) {
 	exp := Expand("255.122.25.24.22/24")
 	if len(exp) != 0 {

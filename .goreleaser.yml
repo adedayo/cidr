@@ -8,16 +8,17 @@ builds:
     - windows
   goarch:
     - amd64
-archive:
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    386: i386
-    amd64: x86_64
-  format_overrides:
-    - goos: windows
-      format: zip
+archives:
+    - id: all-platforms
+      replacements:
+        darwin: Darwin
+        linux: Linux
+        windows: Windows
+        386: i386
+        amd64: x86_64
+      format_overrides:
+        - goos: windows
+          format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -28,9 +29,10 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brew:
-  github:
-    owner: adedayo
-    name: homebrew-tap
-  homepage: "https://github.com/adedayo/cidr"
-  description: "CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It could also be used to check the membership of an IP v4 address in a CIDR range"
+brews:
+  -
+    github:
+      owner: adedayo
+      name: homebrew-tap
+    homepage: "https://github.com/adedayo/cidr"
+    description: "CIDR is a simple utility to generate the IPv4 addresses in a CIDR range. It could also be used to check the membership of an IP v4 address in a CIDR range"

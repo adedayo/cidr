@@ -100,27 +100,6 @@ func TestIPConversion(t *testing.T) {
 	}
 }
 
-func TestExpandBadCIDR(t *testing.T) {
-	exp := Expand("255.256.256.255/24")
-	if len(exp) != 0 {
-		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
-	}
-}
-
-func TestExpandBadCIDR2(t *testing.T) {
-	exp := Expand("255.abc.256.255/24")
-	if len(exp) != 0 {
-		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
-	}
-}
-
-func TestExpandBadCIDR3(t *testing.T) {
-	exp := Expand("255.122.25/24")
-	if len(exp) != 0 {
-		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
-	}
-}
-
 func TestExpandBadPorts(t *testing.T) {
 	testCases := []struct {
 		input    string
@@ -164,12 +143,7 @@ func TestExpandBadPorts(t *testing.T) {
 		})
 	}
 }
-func TestExpandBadCIDR4(t *testing.T) {
-	exp := Expand("255.122.25.24.22/24")
-	if len(exp) != 0 {
-		t.Errorf("Bad CIDR should return empty list, instead of %#v", exp)
-	}
-}
+
 func TestMembership(t *testing.T) {
 	membership := Contains("10.10.10.3/30", "10.10.10.0", "10.10.10.1", "10.10.10.2", "10.10.10.3")
 	for _, member := range membership {

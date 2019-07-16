@@ -34,23 +34,6 @@ func Expand(cidr string) []string {
 	nonCidr := strings.Split(cidr, "/")
 	address := nonCidr[0]
 
-	if strings.Contains(address, ".") {
-		//sanity check for IP addresses
-		if octets := strings.Split(address, "."); len(octets) == 4 {
-			for _, oct := range octets {
-				if octn, err := strconv.Atoi(oct); err == nil {
-					if octn > 255 { // invalid octet
-						return []string{}
-					}
-				} else {
-					return []string{}
-				}
-			}
-		} else {
-			return []string{}
-		}
-	}
-
 	ipAdds, err := net.LookupIP(address)
 	if err != nil {
 		return []string{}
